@@ -1,11 +1,6 @@
-# This file should contain all the record creation needed to seed the database with its default values.
+# This file should contain all the record creation needed to seed the database with its default sample values.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
-#
+
 # Create list of countries along their ISO codes as reference, based on
 # https://www.iban.com/country-codes
 countries = {
@@ -259,3 +254,51 @@ countries = {
   ZW: %q{Zimbabwe},
   AX: %q{Åland Islands},
 }
+
+# List based on https://www.cdc.gov/vaccines/terms/usvaccines.html
+diseases = [
+  %q{Adenovirus},
+  %q{Anthrax},
+  %q{Cholera},
+  %q{DT},
+  %q{DTaP},
+  %q{Haemophilus influenzae type b (Hib)},
+  %q{Hepatitis A},
+  %q{Hepatitis B},
+  %q{Herpes Zoster (Shingles)},
+  %q{Human Papillomavirus (HPV)},
+  %q{Influenza},
+  %q{Japanese encephalitis},
+  %q{Measles, Mumps, Rubella},
+  %q{Meningococcal},
+  %q{Pneumococcal},
+  %q{Polio},
+  %q{Rabies},
+  %q{Rotavirus},
+  %q{Tetanus},
+  %q{Typhoid},
+  %q{Smallpox},
+  %q{Varicella},
+  %q{Yellow Fever},
+]
+
+countries.each do |reference, name|
+  Country.create(name: name, reference: reference)
+end
+
+Fake_vaccine_count = 100
+
+Fake_vaccine_count.times do
+  Vaccine.create(
+    name: Faker::Commerce.product_name.split[0..1].
+      insert(0, diseases.sample).push('Vaccine').join(' '),
+    reference: Faker::Code.nric,
+    composition: Faker::Lorem.sentences(number: 1.upto(30).
+      to_a.sample, supplemental: false).join(' '),
+    delay: Faker::Number.between(from: 3, to: 72)
+  )
+end
+
+Vaccine.all.each do |vaccine|
+  vaccine.countries = (1..Fake_vaccine_count).map{Country.find(1.upto(Country.count).to_a.sample)}
+end
