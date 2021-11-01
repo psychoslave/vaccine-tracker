@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: MyString
+  appointement_at: 2021-11-01
+  mandatory: false
+  fulfilled: false
+  vaccine: one
+  country: one
+
+two:
+  user: MyString
+  appointement_at: 2021-11-01
+  mandatory: false
+  fulfilled: false
+  vaccine: two
+  country: two

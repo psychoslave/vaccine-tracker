@@ -1,0 +1,28 @@
+@startuml
+
+hide empty members
+
+class vaccines {
+  string name
+  string reference
+  text composition
+  integer delay
+}
+
+class inoculations {
+  string user
+  date appointement_at
+  boolean mandatory
+  boolean fulfilled
+}
+
+class countries {
+  string name
+  string reference
+}
+
+vaccines "0,n" -right- "0,n" countries : availability
+inoculations "0,n" -up- "1,1" vaccines : reference
+inoculations "0,n" -right- "1,1" countries : delivery
+@enduml
+

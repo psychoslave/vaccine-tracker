@@ -1,0 +1,47 @@
+<%= form_with(model: inoculation) do |form| %>
+  <% if inoculation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(inoculation.errors.count, "error") %> prohibited this inoculation from being saved:</h2>
+
+      <ul>
+        <% inoculation.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :user %>
+    <%= form.text_field :user %>
+  </div>
+
+  <div class="field">
+    <%= form.label :appointement_at %>
+    <%= form.date_select :appointement_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :mandatory %>
+    <%= form.check_box :mandatory %>
+  </div>
+
+  <div class="field">
+    <%= form.label :fulfilled %>
+    <%= form.check_box :fulfilled %>
+  </div>
+
+  <div class="field">
+    <%= form.label :vaccine_id %>
+    <%= form.text_field :vaccine_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :country_id %>
+    <%= form.text_field :country_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

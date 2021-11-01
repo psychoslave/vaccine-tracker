@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Inoculations</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Appointement at</th>
+      <th>Mandatory</th>
+      <th>Fulfilled</th>
+      <th>Vaccine</th>
+      <th>Country</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @inoculations.each do |inoculation| %>
+      <tr>
+        <td><%= inoculation.user %></td>
+        <td><%= inoculation.appointement_at %></td>
+        <td><%= inoculation.mandatory %></td>
+        <td><%= inoculation.fulfilled %></td>
+        <td><%= inoculation.vaccine_id %></td>
+        <td><%= inoculation.country_id %></td>
+        <td><%= link_to 'Show', inoculation %></td>
+        <td><%= link_to 'Edit', edit_inoculation_path(inoculation) %></td>
+        <td><%= link_to 'Destroy', inoculation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Inoculation', new_inoculation_path %>
