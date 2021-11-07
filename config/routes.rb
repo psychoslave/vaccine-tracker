@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root 'home#index'
   resources :inoculations
   resources :vaccines
   resources :countries
