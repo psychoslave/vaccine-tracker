@@ -1,5 +1,6 @@
 class VaccinesController < ApplicationController
-  before_action :set_vaccine, only: %i[ show edit update destroy ]
+  before_action :set_vaccine, only: %i[ show destroy ]
+  before_action :set_vaccine_with_countries, only: %i[ edit update ]
 
   # GET /vaccines or /vaccines.json
   def index
@@ -13,6 +14,7 @@ class VaccinesController < ApplicationController
   # GET /vaccines/new
   def new
     @vaccine = Vaccine.new
+    set_country_selection
   end
 
   # GET /vaccines/1/edit
@@ -62,8 +64,21 @@ class VaccinesController < ApplicationController
       @vaccine = Vaccine.find(params[:id])
     end
 
+    def set_vaccine_with_countries
+      @vaccine = Vaccine.includes(:countries).find(params[:id])
+      set_country_selection
+    end
+
+    def set_country_selection
+      @selectable_countries = Country.all.map{|c| [c.name, c.id]}
+      @selected_countries = @vaccine.countries&.map(&:id) || []
+    end
+
     # Only allow a list of trusted parameters through.
     def vaccine_params
-      params.require(:vaccine).permit(:name, :reference, :composition, :delay)
+      tut = params.require(:vaccine).permit(:name, :reference, :composition, :delay, countries: [])
+      countries = tut[:countries].select{|c| c.match? /\d+/}
+      tut[:countries] = Country.where(id: countries)
+      tut
     end
 end

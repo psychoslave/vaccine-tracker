@@ -31,6 +31,12 @@
     <%= form.number_field :delay %>
   </div>
 
+  <div class="field">
+    <%= form.label 'Country of availability' %>
+    <%# https://github.com/stefanpenner/country_select might have been an option too here %>
+    <%= form.select :countries, @selectable_countries,  {selected: @selected_countries}, { :multiple => true, :size => 25 } %>
+  </div>
+
   <div class="actions">
     <%= form.submit %>
   </div>
