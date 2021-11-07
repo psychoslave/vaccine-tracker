@@ -34,18 +34,19 @@ class CountriesController < ApplicationController
     end
   end
 
+  # None should update a country
   # PATCH/PUT /countries/1 or /countries/1.json
-  def update
-    respond_to do |format|
-      if @country.update(country_params)
-        format.html { redirect_to @country, notice: "Country was successfully updated." }
-        format.json { render :show, status: :ok, location: @country }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @country.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  #def update
+  #  respond_to do |format|
+  #    if @country.update(country_params)
+  #      format.html { redirect_to @country, notice: "Country was successfully updated." }
+  #      format.json { render :show, status: :ok, location: @country }
+  #    else
+  #      format.html { render :edit, status: :unprocessable_entity }
+  #      format.json { render json: @country.errors, status: :unprocessable_entity }
+  #    end
+  #  end
+  #end
 
   # DELETE /countries/1 or /countries/1.json
   def destroy
