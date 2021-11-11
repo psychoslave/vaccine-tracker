@@ -3,7 +3,8 @@ class InoculationsController < ApplicationController
 
   # GET /inoculations or /inoculations.json
   def index
-    @inoculations = Inoculation.all
+    #@inoculations = Inoculation.all
+    @pagy, @inoculations = pagy(Inoculation.all)
   end
 
   # GET /inoculations/1 or /inoculations/1.json

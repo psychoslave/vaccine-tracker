@@ -57,3 +57,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # For demo purposes, allowing to generate fake data
 gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'master'
+
+# Inoculations really ought to be paginated as millions of entries are the goal
+gem 'pagy', '~> 5.3.0'
