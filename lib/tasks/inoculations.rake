@@ -32,6 +32,9 @@ namespace :inoculations do
     end
 
     store lines
+    # Make vaccine available wherever at least one inoculation was programmed
+    # TODO: use update_all instead to make that more performant
+    Vaccine.includes(inoculations: :country).map{ _1.countries = _1.inoculations.map(&:country) }
   end
 
   # Transform given CSV lines into inoculation hash entries and insert them

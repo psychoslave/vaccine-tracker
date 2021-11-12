@@ -4,9 +4,31 @@ module Ask
       def index
         fad = inoculation_params
 
-        fad[:country] = Country.where(reference: fad[:country]).first
-        @inoculations = Inoculation.where(fad).order(fulfilled: :asc, mandatory: :desc)
-        render json: @inoculations
+        country = fad[:country] = Country
+          .includes(vaccines: :countries).where(reference: fad[:country]).first
+
+        unless fad[:user].nil?
+          inoculations = country.inoculations.where(fad).order(appointement_at: :desc)
+        end
+
+        aim = %w[name reference composition]
+        vaccines = country.vaccines.map do |vaccine|
+          tut = {
+            vaccine: vaccine.attributes.select{ |a| a.in? aim },
+            country_availability: vaccine.countries.map(&:name),
+
+          }
+          # next vaccination booster date if user was provided
+          unless fad[:user].nil?
+            tut[:next_appointment] = inoculations
+              .select{ _1.vaccine_id == vaccine.id }.first
+              &.appointement_at&.iso8601
+          end
+
+          tut
+        end
+
+        render json: vaccines.to_json
       end
 
       private
