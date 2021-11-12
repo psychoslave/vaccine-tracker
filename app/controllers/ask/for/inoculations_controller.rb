@@ -18,6 +18,7 @@ module Ask
           wad = inoculations
             .select{ _1.vaccine_id == vaccine.id }
 
+          # TODO, consider further optimization with a counter cache
           locally_fulfilled_inoculations = wad.nil? ? 0 : wad.count
           rate = 100.0 * locally_fulfilled_inoculations / country.population
           tut = {
@@ -41,12 +42,42 @@ module Ask
         render json: vaccines.to_json
       end
 
-      private
-        # Use callbacks to share common setup or constraints between actions.
-        def set_inoculation
-          @inoculation = Inoculation.find(params[:id])
+      # GET /inoculations/new
+      def new
+        params.require(:user)
+        params.require(:vaccine)
+        fad = params.permit(:vaccine, :user)
+
+        # if vaccine reference is not valid, render error
+        vaccine = Vaccine.where(reference: fad[:vaccine]).first
+        unless vaccine
+          raise ActionController::RoutingError.new('Vaccine Not Found')
+          render html: 'Invalid vaccine reference'
+          head :bad_request
+          return
         end
 
+        # assume same country for people already recorded, or a random one otherwise
+        inoculations = Inoculation.includes(:country).where(user: fad[:user]).order(appointment_at: :desc)
+        country = if inoculations.any?
+                    inoculations.first.country
+                  else
+                    Country.all.sample
+                  end
+        date = Faker::Date.between(from: Date.today+1, to: 1.year.from_now)
+        item = Inoculation.new(
+          user: fad[:user], appointement_at: date, vaccine: vaccine,
+          country: country, mandatory: true, fulfilled: false
+        )
+        if item.save
+          head :ok
+        else
+          render html: 'Entry could not be saved'
+          head :bad_request
+        end
+      end
+
+      protected
         # Only allow a list of trusted parameters through.
         def inoculation_params
           params.require(:country)
