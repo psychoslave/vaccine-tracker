@@ -11,12 +11,14 @@ module Ask
         unless fad[:user].nil?
           inoculations = country.inoculations.where(fad).order(appointement_at: :desc)
         end
+        fulfilled_inoculations = inoculations.where(fulfilled: true)
 
         aim = %w[name reference composition]
         vaccines = country.vaccines.map do |vaccine|
-          locally_fulfilled_inoculations = inoculations
-                .where(fulfilled: true, vaccine_id: vaccine.id)
-                .count
+          wad = inoculations
+            .select{ _1.vaccine_id == vaccine.id }
+
+          locally_fulfilled_inoculations = wad.nil? ? 0 : wad.count
           rate = 100.0 * locally_fulfilled_inoculations / country.population
           tut = {
             vaccine: vaccine.attributes.select{ |a| a.in? aim },
