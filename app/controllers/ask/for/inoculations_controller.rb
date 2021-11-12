@@ -4,6 +4,7 @@ module Ask
       def index
         fad = inoculation_params
 
+        # TODO: move all this logic to the model
         country = fad[:country] = Country
           .includes(vaccines: :countries).where(reference: fad[:country]).first
 
@@ -13,12 +14,19 @@ module Ask
 
         aim = %w[name reference composition]
         vaccines = country.vaccines.map do |vaccine|
+          locally_fulfilled_inoculations = inoculations
+                .where(fulfilled: true, vaccine_id: vaccine.id)
+                .count
+          rate = 100.0 * locally_fulfilled_inoculations / country.population
           tut = {
             vaccine: vaccine.attributes.select{ |a| a.in? aim },
-            country_availability: vaccine.countries.map(&:name),
-
+            delivering_countries: vaccine.countries.map(&:name),
+            country_population: country.population,
+            locally_fulfilled_inoculations: locally_fulfilled_inoculations,
+            coverage: rate,
           }
           # next vaccination booster date if user was provided
+          # TODO, add filter to take into account only dates still in future?
           unless fad[:user].nil?
             tut[:next_appointment] = inoculations
               .select{ _1.vaccine_id == vaccine.id }.first
