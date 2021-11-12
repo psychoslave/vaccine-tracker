@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_01_052850) do
+ActiveRecord::Schema.define(version: 2021_11_12_130431) do
 
   create_table "countries", force: :cascade do |t|
     t.string "name"
     t.string "reference"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "population"
   end
 
   create_table "countries_vaccines", id: false, force: :cascade do |t|

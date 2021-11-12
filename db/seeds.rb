@@ -283,7 +283,11 @@ diseases = [
 ]
 
 countries.each do |reference, name|
-  Country.create(name: name, reference: reference)
+  # TODO: bring somewhat correc data to population.
+  # https://www.worldometers.info/world-population/population-by-country/ give
+  # some number, but this require some mix and match work.
+  # For now using a faked number will do the job.
+  Country.create(name: name, reference: reference, population: Faker::Number.between(from: 801, to: 1_439_323_776))
 end
 
 Fake_vaccine_count = 100
