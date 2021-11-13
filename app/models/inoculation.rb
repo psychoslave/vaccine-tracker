@@ -14,12 +14,10 @@ class Inoculation < ApplicationRecord
     unless sought[:user].nil?
       inoculations = country.inoculations.where(sought).order(appointement_at: :desc)
     end
-    fulfilled_inoculations = inoculations.where(fulfilled: true)
 
     swab = %w[name reference composition]
     country.vaccines.map do |vaccine|
-      wad = inoculations
-        .select{ _1.vaccine_id == vaccine.id }
+      wad = inoculations.select{ _1.vaccine_id == vaccine.id }
 
       # TODO, consider further optimization with a counter cache
       locally_fulfilled_inoculations = wad.nil? ? 0 : wad.count
@@ -34,9 +32,9 @@ class Inoculation < ApplicationRecord
       # next vaccination booster date if user was provided
       # TODO, consider filtering outdated appointements
       unless sought[:user].nil?
-        tut[:next_appointment] = inoculations
-          .select{ _1.vaccine_id == vaccine.id }.first
-        &.appointement_at&.iso8601
+        inoculation = inoculations.select{ _1.vaccine_id == vaccine.id }.first
+        tut[:next_appointment] = inoculation&.appointement_at&.iso8601
+        tut[:mandatory_for_user] = inoculation&.mandatory
       end
 
       tut
