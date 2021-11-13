@@ -7,7 +7,7 @@ module Ask
 
       # GET /inoculations/new
       def new
-        fad = hatch_params
+        fad = build_params
 
         # if vaccine reference is not valid, render error
         vaccine = Vaccine.where(reference: fad[:vaccine]).first
@@ -31,8 +31,8 @@ module Ask
           params.permit(:country, :user)
         end
 
-        # Ensure that user and country and allow them
-        def hatch_params
+        # Ensure that user and country are present and allow them
+        def build_params
           %i[user vaccine].each{ params.require(_1) }
           params.permit(:vaccine, :user)
         end
