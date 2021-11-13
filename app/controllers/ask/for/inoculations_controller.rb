@@ -7,37 +7,21 @@ module Ask
 
       # GET /inoculations/new
       def new
-        params.require(:user)
-        params.require(:vaccine)
-        fad = params.permit(:vaccine, :user)
+        fad = hatch_params
 
         # if vaccine reference is not valid, render error
         vaccine = Vaccine.where(reference: fad[:vaccine]).first
-        unless vaccine
-          raise ActionController::RoutingError.new('Vaccine Not Found')
-          render html: 'Invalid vaccine reference'
-          head :bad_request
-          return
-        end
+        raise ActiveRecord::RecordNotFound unless vaccine
 
-        # assume same country for people already recorded, or a random one otherwise
-        inoculations = Inoculation.includes(:country).where(user: fad[:user]).order(appointment_at: :desc)
-        country = if inoculations.any?
-                    inoculations.first.country
-                  else
-                    Country.all.sample
-                  end
-        date = Faker::Date.between(from: Date.today+1, to: 1.year.from_now)
-        item = Inoculation.new(
-          user: fad[:user], appointement_at: date, vaccine: vaccine,
-          country: country, mandatory: true, fulfilled: false
-        )
-        if item.save
-          head :ok
-        else
-          render html: 'Entry could not be saved'
-          head :bad_request
-        end
+        item = Inoculation.build(fad[:user], vaccine)
+        raise ActiveRecord::RecordNotFound unless vaccine unless item.save!
+
+        head :created
+
+      rescue ActiveRecord::RecordNotFound
+        render json: {error: 'Invalid vaccine reference'}.to_json, status: :unprocessable_entity
+      rescue ActiveRecord::RecordNotSaved
+        render json: {error: 'The inoculation could not be saved'}.to_json, status: :internal_server_error
       end
 
       protected
@@ -45,6 +29,12 @@ module Ask
         def report_params
           params.require(:country)
           params.permit(:country, :user)
+        end
+
+        # Ensure that user and country and allow them
+        def hatch_params
+          %i[user vaccine].each{ params.require(_1) }
+          params.permit(:vaccine, :user)
         end
     end
   end

@@ -42,4 +42,23 @@ class Inoculation < ApplicationRecord
       tut
     end
   end
+
+  # Create an inoculation entry for the provided user
+  # user:: string reference for the user which should be appointed a new inoculation
+  # vaccine:: a vaccine instance of the concerned product
+  def self.build(user, vaccine)
+    # assume same country for people already recorded, or a random one otherwise
+    inoculations = Inoculation.includes(:country).where(user: user).order(appointment_at: :desc)
+    country = if inoculations.any?
+                inoculations.first.country
+              else
+                Country.all.sample
+              end
+    date = Faker::Date.between(from: Date.today+1, to: 1.year.from_now)
+
+    Inoculation.new(
+      user: user, appointement_at: date, vaccine: vaccine,
+      country: country, mandatory: true, fulfilled: false
+    )
+  end
 end
