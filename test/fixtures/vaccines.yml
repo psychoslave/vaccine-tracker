@@ -5,9 +5,11 @@ one:
   reference: MyString
   composition: MyText
   delay: 1
+  countries: one, two
 
 two:
   name: MyString
   reference: MyString
   composition: MyText
   delay: 1
+  countries: one, two

@@ -33,11 +33,6 @@ class CountriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should update country" do
-    patch country_url(@country), params: { country: { name: @country.name, reference: @country.reference } }
-    assert_redirected_to country_url(@country)
-  end
-
   test "should destroy country" do
     assert_difference('Country.count', -1) do
       delete country_url(@country)

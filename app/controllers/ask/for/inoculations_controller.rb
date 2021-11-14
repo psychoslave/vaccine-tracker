@@ -24,7 +24,7 @@ module Ask
         render json: {error: 'The inoculation could not be saved'}.to_json, status: :internal_server_error
       end
 
-      protected
+      private
         # Ensure that country is present, and allow it together with user
         def report_params
           params.require(:country)

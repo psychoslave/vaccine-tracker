@@ -17,7 +17,14 @@ class VaccinesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create vaccine" do
     assert_difference('Vaccine.count') do
-      post vaccines_url, params: { vaccine: { composition: @vaccine.composition, delay: @vaccine.delay, name: @vaccine.name, reference: @vaccine.reference } }
+      vaccine = {
+        composition: @vaccine.composition,
+        delay: @vaccine.delay,
+        name: @vaccine.name,
+        reference: @vaccine.reference,
+        countries: @vaccine.countries.map{ _1.id },
+      }
+      post vaccines_url, params: { vaccine: vaccine }
     end
 
     assert_redirected_to vaccine_url(Vaccine.last)

@@ -51,6 +51,8 @@ class VaccinesController < ApplicationController
 
   # DELETE /vaccines/1 or /vaccines/1.json
   def destroy
+    @vaccine.countries.clear
+    @vaccine.inoculations.each(&:destroy)
     @vaccine.destroy
     respond_to do |format|
       format.html { redirect_to vaccines_url, notice: "Vaccine was successfully destroyed." }
@@ -77,7 +79,7 @@ class VaccinesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def vaccine_params
       tut = params.require(:vaccine).permit(:name, :reference, :composition, :delay, countries: [])
-      countries = tut[:countries].select{|c| c.match? /\d+/}
+      countries = tut[:countries]&.select{ _1.match? /\d+/}
       tut[:countries] = Country.where(id: countries)
       tut
     end
