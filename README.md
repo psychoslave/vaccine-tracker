@@ -32,7 +32,7 @@ The implementation use the following model:
 
 ![Overview of the database schema](https://raw.githubusercontent.com/psychoslave/vaccine-tracker/main/db/schema.png)
 
-It allow to make a clear distinction between vaccines as product and vaccines
+It allows to make a clear distinction between vaccines as product and vaccines
 as inoculation acts, to state in which country a product is available, and
 to express for each inoculation who receid it (anonymous user identifier), in
 which country it was delivered and which product it pertains to.
